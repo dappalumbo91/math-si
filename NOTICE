@@ -1,0 +1,19 @@
+math-si
+Copyright 2026 Damian Palumbo
+
+The dial, the training scripts, the Lean contract, and this documentation
+are original work in this repository and are licensed under the Apache
+License, Version 2.0. See the LICENSE file.
+
+The LoRA adapters in adapter/, adapter-20step/, and adapter-epoch2/
+through adapter-epoch6/ are fine-tunes of Google DeepMind Gemma 4 E4B
+instruction-tuned weights:
+
+  model id: google/gemma-4-E4B-it
+  license: Apache License, Version 2.0
+  https://huggingface.co/google/gemma-4-E4B-it
+  https://ai.google.dev/gemma/docs/gemma_4_license
+
+The base weights are not in this repository. Download them separately.
+Gemma is a trademark of Google LLC. This project is not affiliated with
+Google.

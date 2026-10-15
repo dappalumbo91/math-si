@@ -1,0 +1,21 @@
+{
+  "hub": "C:\\Users\\damia\\Desktop\\FSOT-2.1-Lean",
+  "formulas": {
+    "files_read": 1004,
+    "raw_formula_objects": 4180,
+    "unique_formula_points": 2233,
+    "skipped": [],
+    "path": "C:\\Users\\damia\\Desktop\\math si\\corpus\\formula_points.jsonl"
+  },
+  "lean": {
+    "lean_decls": 7537,
+    "path": "C:\\Users\\damia\\Desktop\\math si\\corpus\\lean_decls.jsonl"
+  },
+  "law": {
+    "constants": 33,
+    "engine_defs": 43,
+    "path": "C:\\Users\\damia\\Desktop\\math si\\corpus\\law_and_constants.jsonl"
+  },
+  "train_rows": 9846,
+  "train_path": "C:\\Users\\damia\\Desktop\\math si\\corpus\\train.jsonl"
+}
