@@ -12,7 +12,7 @@ Start with `RESUME.md`. That file is the pickup note for the next session:
 what was trained, what passed a published bar, and what is still open.
 
 The live dial loads `adapter/` (epoch 1). The scored passes through
-2026-10-15 are in `adapter-epoch6/`. Nothing in the ledger has `send: true`.
+2026-10-19 are in `adapter-epoch7/`. Nothing in the ledger has `send: true`.
 
 The mathematical hub at `FSOT-2.1-Lean` is read by this project and is not
 modified from here. Pin AEB2AD stays the engine pin.

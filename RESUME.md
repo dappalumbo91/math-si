@@ -1,6 +1,6 @@
 # Resume
 
-Pickup note for math-si. Written 2026-10-15. Read this before training
+Pickup note for math-si. Updated 2026-10-19. Read this before training
 or scoring again.
 
 The model proposes. The pinned engine computes. A published uncertainty
@@ -11,12 +11,14 @@ the hub.
 ## Where things stand
 
 The live dial in `dial/local_model.py` still loads `adapter/`. That is
-epoch 1. The weights that currently say the ten inside-bar expressions
-are `adapter-epoch6/`. Switching the dial to epoch 6 has not been done.
+epoch 1. The weights that currently say the twelve inside-bar expressions
+are `adapter-epoch7/`. Switching the dial to epoch 7 has not been done.
 
-Ten published-bar rows sit inside z ≤ 1 under epoch 6. Nine of them are
-the recorded formula. One, matter-clustering `sigma_8`, is a cleaned
-product the engine scored. It is not the recorded formula for that row.
+Twelve published-bar rows sit inside z ≤ 1 under epoch 7. Nine of them are
+the recorded formula as written. Matter-clustering `sigma_8` is the cleaned
+product `psi_con*phi^(1-ln(phi))`. The two reionization rows are the
+recorded absolute value spelled `phi*abs(Chaos) - ln(phi)`. That spelling
+was also emitted on the sigma_8 scalar row, where it is outside the bar.
 
 ## Machine
 
@@ -123,6 +125,14 @@ Epoch 6 taught `psi_con*phi^(1-ln(phi))` for the `sigma_8` matter-clustering
 row only, and kept the nine recorded passes. `psi_con` in the engine is
 `1 - e^(-1)`.
 
+Epoch 7 taught the legal spelling of two recorded formulas the gate had
+been rejecting, and repeated the other open rows as their own statements.
+`FSOT: phi*(e/pi)+1` is the label plus `phi*(e/pi)+1`. `|Chaos|` is
+`abs(Chaos)`. Chaos in the engine is negative, so a bar the tokenizer
+drops flips the sign and the reionization value comes out near −1.017.
+`phi*abs(Chaos) - ln(phi)` is the recorded absolute value. It was not
+copied from another row.
+
 ## Approaches, in order
 
 1. Local Hugging Face training. Ollama was left as optional chat.
@@ -152,13 +162,16 @@ row only, and kept the nine recorded passes. `psi_con` in the engine is
    a `sigma_8` line whose bars and colons the tokenizer deleted.
 8. A gate that rejects those dropped characters, then a pass that teaches
    the cleaned product on that one row.
+9. Epoch 7 spelled `|Chaos|` as `abs(Chaos)` and dropped the `FSOT:` label
+   on the dependency-length row. The absolute-value spelling is the
+   recorded reionization formula. The label is not part of the math.
 
 ## Scored results
 
-Epoch 6, greedy, 45 published-bar rows, `logs/epoch6_score.jsonl`.
-Train loss on that pass was 1.119. Nothing was sent.
-
-Inside the published bar:
+Epoch 7, greedy, 45 published-bar rows, `logs/epoch7_score.jsonl`.
+Trained 228 steps at 5e-6 from `adapter-epoch6` on
+`corpus/epoch7_cover.jsonl`. Logged train loss 5.078. Nothing was sent.
+Twelve rows are inside. The ten from epoch 6 held. Two are new.
 
 | Row | Expression the model said | z |
 | --- | --- | --- |
@@ -170,26 +183,45 @@ Inside the published bar:
 | DESI 2024 BAO preview w0 | `−P_new·π/G` | 0.326 |
 | dwarf-core radius r_c | `eta_eff*phi - poof` | 0.020 |
 | sigma_8 matter clustering | `psi_con*phi^(1-ln(phi))` | 0.045 |
+| tau reionization optical depth | `phi*abs(Chaos) - ln(phi)` | 0.240 |
+| tau reionization scalar | `phi*abs(Chaos) - ln(phi)` | 0.0005 |
 
-The engine value of the w0 expression is about −1.02998. The engine value
-of the dwarf-core expression is 0.602 against a measured 0.6. The engine
-value of the sigma_8 product is 0.811372 against a measured 0.8111 and a
-0.74% bar.
+The reionization expression evaluates to 0.054397. The optical-depth
+center is 0.0561, bar 12.67%, z 0.240. The scalar center is 0.0544, same
+bar, z 0.0005. The recorded text is still `φ·|Chaos| − ln(φ)`. The `abs`
+spelling is how the hub parser keeps the absolute value. It is not a new
+coefficient.
 
-The sigma_8 recorded formula is still `|S_cosm|·S_quant + |Chaos|`. The
-product was trained for that row after the engine had already scored it.
-It is one consistency with that measurement. It is not a derivation, and
-it is not a formula for any other row.
+That same expression was also said on `sigma_8` fsot_compute_scalar.
+That row's recorded formula is still `|S_cosm|·S_quant + |Chaos|`. The
+engine value 0.054397 against that row's center is z 126, outside. A pass
+on reionization does not move to sigma_8.
 
-Earlier score files, if a comparison is needed: `logs/epoch2_score.jsonl`
-through `logs/epoch5_score.jsonl`. Epoch 2 had 0 of 45 inside. Epoch 3
-recovered 6 inside, all recorded. Epoch 4 added the fine-structure leaf,
-its inverse, and N_eff, for 9 inside. Epoch 5 kept those 9 and first
-showed the sigma_8 number, still wrapped in `|` and `::`.
+`w0_bao` and `w0_BAO` now say their own recorded line `w0_cmb·(1 − G/π)`
+instead of the passing w0 expression. `w0_cmb` is not an engine name, so
+those rows stay unscored. DESI DR2 said `w0_cmb·(1 − ln(φ)/π)`, which is
+not the recorded line. Mean dependency length said
+`phi*(e/pi)+alpha_eff*(1-phi/sqrt(3))`. The recorded math
+`phi*(e/pi)+1` is 2.400 against 2.3, z 0.768, and the model did not say
+it. Deuterium said a superscript form the gate rejects. Electron g still
+uses an unknown name.
+
+Sixteen rows match their recorded text, including Bohr radius, Compton
+wavelength, classical electron radius, and Bohr magneton. Those use `h`
+or `m_e`, so they stay unscored.
+
+Epoch 6, for comparison, is `logs/epoch6_score.jsonl`. Ten inside. Train
+loss on that pass was 1.119. Nothing was sent. The engine value of the w0
+expression is about −1.02998. The dwarf-core expression is 0.602 against a
+measured 0.6. The sigma_8 product is 0.811372 against a measured 0.8111
+and a 0.74% bar. Earlier files are `logs/epoch2_score.jsonl` through
+`logs/epoch5_score.jsonl`. Epoch 2 had 0 of 45 inside. Epoch 3 recovered 6.
+Epoch 4 reached 9. Epoch 5 kept those 9 and first showed the sigma_8
+number, still wrapped in `|` and `::`.
 
 ## What is still open
 
-These published-bar rows did not pass under epoch 6.
+These published-bar rows did not pass under epoch 7.
 
 The mass and atomic constants, the g-factors, and several electromagnetic
 constants use names the engine does not have, including `h`, `m_e`, and
@@ -197,11 +229,13 @@ constants use names the engine does not have, including `h`, `m_e`, and
 knows the name. Do not add those names by editing the hub unless Damian
 asks.
 
-Reionization's recorded formula `φ·|Chaos| − ln(φ)` evaluates live to
-about −1.017. The measured centers are about 0.054 and 0.056. The live
-engine is outside the bar. Deuterium and Hubble are outside or unscored.
-DESI DR2 w0 and the BAO w0 rows use a different recorded statement from
-`−P_new·π/G`. Pasting the passing w0 expression onto them is a kill.
+Mean dependency length's recorded math is `phi*(e/pi)+1`, which the engine
+places at 2.400 against 2.3, z 0.768. Epoch 7 did not say that line.
+Deuterium's recorded `1/(π⁴·e⁶)` is gate-legal and outside, z 4.48. Hubble
+is unscored. DESI DR2 still is not its recorded statement. `w0_bao` and
+`w0_BAO` say their recorded statement and stay unscored. The sigma_8
+scalar row must not receive the reionization expression or the
+matter-clustering product.
 
 Acoustic impedance and work function still have no published percent in
 the species catalog or the anchor file. They stay killed as
@@ -221,6 +255,7 @@ it, is not coded. The nine recorded passes were in the training file.
 | `adapter-epoch4/` | The three recoverable formulas plus the six, 420 steps, loss 0.160. Nine inside. |
 | `adapter-epoch5/` | Source, trinary, and open-problem text, 400 steps, loss 8.112. Nine inside, plus the raw sigma_8 line. |
 | `adapter-epoch6/` | Cleaned sigma_8 product plus the nine, 240 steps, loss 1.119. Ten inside. |
+| `adapter-epoch7/` | Legal reionization absolute value plus the open-row statements, 228 steps, loss 5.078. Twelve inside. The tau expression also landed on the sigma_8 scalar row, where it is outside. |
 
 Checkpoints, optimizer states, and the copied `tokenizer.json` files are
 gitignored. The base tokenizer comes from `D:\models\gemma-4-E4B-it`.
@@ -231,7 +266,7 @@ From `C:\Users\damia\Desktop\math si`:
 
 ```
 python -u checks\run_contract.py
-python -u checks\score_adapter.py --adapter adapter-epoch6 --out logs\epoch6_score.jsonl --source epoch6-score
+python -u checks\score_adapter.py --adapter adapter-epoch7 --out logs\epoch7_score.jsonl --source epoch7-score
 python -u dial\run.py --self-test
 ```
 
