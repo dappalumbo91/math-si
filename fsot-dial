@@ -1,0 +1,5 @@
+#!/bin/bash
+# Open the interactive FSOT dial from this repo.
+ROOT="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+cd "$ROOT" || exit 1
+exec python3 -m dial.tui "$@"

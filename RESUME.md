@@ -223,11 +223,13 @@ number, still wrapped in `|` and `::`.
 
 These published-bar rows did not pass under epoch 7.
 
-The mass and atomic constants, the g-factors, and several electromagnetic
-constants use names the engine does not have, including `h`, `m_e`, and
-`w0_cmb`. Repeating the recorded text cannot produce a z until the engine
-knows the name. Do not add those names by editing the hub unless Damian
-asks.
+The dial now binds the published constants the CODATA table already
+measures: `h`, `m_e`, `m_p`, `m_n`, `m_mu`, `m_u`, `mu_0`, `epsilon_0`,
+`k_b`, `hbar` as `h/(2*pi)`, `nu_cs`, and `c_light`. `m_h` is the formula
+point 125.25 GeV. The hub file was not edited. Bare `c` and bare `g` stay
+Catalan's constant, because the hub normalizer already rewrites those
+letters. `m_nu`, `g_p_eff`, `p_cosm`, and `p_rad` are not in the tables.
+`w0_cmb` is still not an engine name.
 
 Mean dependency length's recorded math is `phi*(e/pi)+1`, which the engine
 places at 2.400 against 2.3, z 0.768. Epoch 7 did not say that line.
@@ -272,6 +274,9 @@ python -u dial\run.py --self-test
 
 The self-test appends one ledger line. The score script appends one ledger
 line per row. Do not treat either as a promotion.
+
+On the Mac mini, `fsot-dial` opens the interactive dial. It scores one typed
+line against the selected published row. It does not train and it does not send.
 
 A new training run must use `--resume-adapter` and a new `--output-dir`.
 `train_lora.py` refuses to resume into the same directory. The default

@@ -8,6 +8,7 @@ does not use the portable core_context() mirror.
 from __future__ import annotations
 
 import importlib
+import json
 import math
 import re
 import sys
@@ -28,6 +29,68 @@ def _load_hub():
     compute = importlib.import_module("fsot_compute")
     parser = importlib.import_module("math_formula_eval")
     return compute, parser
+
+
+# Formula names the hub leaves unbound, and the CODATA record that measures them.
+# Bare c and bare g stay Catalan's constant. The hub normalizer already rewrites them.
+_CODATA_ALIAS = {
+    "h": "Planck_constant",
+    "m_e": "electron_mass",
+    "m_p": "proton_mass",
+    "m_proton": "proton_mass",
+    "m_n": "neutron_mass",
+    "m_mu": "muon_mass",
+    "m_u": "atomic_mass_constant",
+    "mu_0": "vacuum_magnetic_permeability",
+    "mu0": "vacuum_magnetic_permeability",
+    "epsilon_0": "vacuum_electric_permittivity",
+    "eps0": "vacuum_electric_permittivity",
+    "k_b": "Boltzmann_constant",
+    "c_light": "speed_of_light_in_vacuum",
+}
+
+
+def _records_by_name(path: Path) -> dict[str, float]:
+    if not path.exists():
+        return {}
+    document = json.loads(path.read_text(encoding="utf-8"))
+    found: dict[str, float] = {}
+    for key in ("records", "material_records"):
+        for row in document.get(key) or []:
+            name = row.get("name")
+            measured = row.get("measured")
+            if name and isinstance(measured, (int, float)):
+                found[str(name)] = float(measured)
+    return found
+
+
+def _higgs_gev() -> float | None:
+    points = Path(__file__).resolve().parents[1] / "corpus" / "formula_points.jsonl"
+    if not points.exists():
+        return None
+    for line in points.read_text(encoding="utf-8").splitlines():
+        if '"m_H"' not in line:
+            continue
+        row = json.loads(line)
+        if row.get("name") == "m_H" and row.get("property") == "m_H":
+            measured = row.get("measured")
+            if isinstance(measured, (int, float)):
+                return float(measured)
+    return None
+
+
+def _cesium_hz(hub: Path) -> float | None:
+    path = hub / "data" / "atomic_physics_gap_fill_benchmark.json"
+    if not path.exists():
+        return None
+    document = json.loads(path.read_text(encoding="utf-8"))
+    for key in ("records", "material_records"):
+        for row in document.get(key) or []:
+            if row.get("property") == "hyperfine transition frequency of Cs-133":
+                measured = row.get("measured")
+                if isinstance(measured, (int, float)):
+                    return float(measured)
+    return None
 
 
 @lru_cache(maxsize=1)
@@ -75,6 +138,21 @@ def environment() -> dict[str, float]:
         "log2": math.log(2.0),
         "sqrt2": math.sqrt(2.0),
     }
+    published = _records_by_name(Path(HUB) / "data" / "codata_full_table_open_benchmark.json")
+    for alias, source in _CODATA_ALIAS.items():
+        if alias not in pairs and source in published:
+            pairs[alias] = published[source]
+    if "h" in pairs and "pi" in pairs:
+        hbar = float(pairs["h"]) / (2.0 * float(pairs["pi"]))
+        for alias in ("hbar", "h_bar"):
+            if alias not in pairs:
+                pairs[alias] = hbar
+    cesium = _cesium_hz(Path(HUB))
+    if cesium is not None:
+        pairs.setdefault("nu_cs", cesium)
+    higgs = _higgs_gev()
+    if higgs is not None:
+        pairs.setdefault("m_h", higgs)
     return {name: float(value) for name, value in pairs.items()}
 
 
