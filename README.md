@@ -1,5 +1,7 @@
 # math-si
 
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
 A local dial for FSOT formulas. Gemma 4 E4B proposes. The pinned engine
 computes. A published uncertainty scores. Lean 4 checks a formal
 statement. An append-only ledger records the try.
